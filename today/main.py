@@ -13,9 +13,11 @@ import requests_cache
 from datetime import timedelta
 
 os.chdir("/home/pi/PaperProject/today")
-# get OPENWEATHER_API_KEY from environment
+
+# This program expects there to be two variables in the environment called OPENWEATHERMAP_API_KEY and ICAL_URL
 OPENWEATHER_API_KEY = os.environ.get('OPENWEATHER_API_KEY')
-print("Did we get key", OPENWEATHER_API_KEY)
+ICAL_URL = os.environ.get('ICAL_URL')
+
 libdir = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'lib')
 
 if os.path.exists(libdir):
@@ -30,7 +32,7 @@ logging.basicConfig(level=logging.DEBUG)
 ## Set up URLS we’ll use on this client
 geo_call_url = "https://api.openweathermap.org/geo/1.0/direct?q=Seattle&limit=1&appid=" + OPENWEATHER_API_KEY
 rss_feed = "https://rss.nytimes.com/services/xml/rss/nyt/HomePage.xml"
-cal_url = "https://p25-caldav.icloud.com/published/2/NjI5NjMzNjM2Mjk2MzM2M7P9vPAUf2XJwUfr0SHIekqR5OqcF_Cpvf7qcX7i1hTt"
+cal_url = ICAL_URL
 
 session = requests_cache.CachedSession('xml_cache', expire_after=timedelta(minutes=5))
 cal_session = requests_cache.CachedSession('cal_cache', expire_after=timedelta(minutes=5))
@@ -186,7 +188,7 @@ try:
         rsses.append(posts.title)
 
     # Draw a NEWS header
-    draw_red.text((10, epd.width - 180), "NEWS", font=fontLiterata40, fill=0)
+    draw_red.text((10, epd.width - 190), "NEWS", font=fontLiterata40, fill=0)
     # Display 3 headlines from the RSS feeds
     startheight = epd.width - 140
     for i in range(3):
